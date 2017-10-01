@@ -57,7 +57,7 @@ class Usuario {
 	
 
 	// Metodos de trabalho
-	// 
+	// Metodo para trazer todos dados de um determinado ID (Somente um usuário)
 	public function loadById($id) {
 		$sql = new Sql();
 
@@ -74,7 +74,7 @@ class Usuario {
 								
 			}
 	}  
-
+	// Metodo que gera as informações em Strings 
 	public function __toString () {
 		
 		return json_encode(array(
@@ -84,5 +84,44 @@ class Usuario {
 				"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s"),
 		));
 	}
+	//Metodo para gerar todos Usuário da tabela (lista te todos)
+	public static function getList() {
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin");
+	}
+
+	// Metodo para busca de usuário
+	public static function search($login) {
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+			':SEARCH'=>"%".$login."%"
+	));
+	}	
+
+	// Metodo que buscar informações de um usuario autenticado no banco
+	public function login ($login, $password) {
+		$sql = new Sql();
+
+		$results = $sql -> select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha=:PASSWORD", array(
+
+			":LOGIN"=>$login,
+			":PASSWORD"=>$password,
+		)); 
+			
+			if (count($results) > 0) {
+				
+				$row = $results[0];
+
+				$this -> setUsuario($row['idusuario']);
+				$this -> setDeslogin($row['deslogin']);
+				$this -> setDessenha($row['dessenha']);
+				$this -> setDtcadastro(new DateTime($row['dtcadastro']));
+								
+			} else {
+				throw new Exception("Login e/ou senha inválido.", 1);
+				
+			}
+	} 
+	
 }
  ?>
