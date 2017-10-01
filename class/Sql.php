@@ -1,0 +1,49 @@
+ <?php
+        
+        class Sql extends PDO {
+          
+          //atributos 
+          private $conn;
+
+          //construtor 
+          public function __construct () {
+            $this -> conn =  new PDO ("mysql:dbname=dbphp7; host=localhost","root","");
+          }
+
+          //metodos 
+          
+          private function setParams($statment,$parameters = array()) {
+                         
+                foreach ($parameters as $key => $value) {
+            
+                $this->setParam($key, $value);      
+            }
+          }
+          private function setParam ($statment, $key,$value) {
+                $statment->bindParam($key, $value);
+          }
+
+
+          public function query ($rawquery,$params= array()) 
+          {
+          
+                $stmt = $this->conn->prepare($rawquery);
+                
+                $this->setParams($stmt,$params);
+                
+                $stmt -> execute();
+
+                return $stmt;
+          }
+
+          public function select ($rawquery,$params= array()):array 
+          {
+                
+                $stmt = $this->query($rawquery,$params);
+
+               return $stmt->fetchall(PDO::FETCH_ASSOC);
+          }
+        }    
+        
+ 			?> 
+ 
