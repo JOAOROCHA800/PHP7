@@ -47,14 +47,32 @@
       */
       // Carrega um usuário usando o login e senha 
       // 
+      /*
         $usuario = new Usuario();
        
         $usuario -> login("Joao.Rocha","Rocha@123");
        
         echo $usuario;
- 			
-      ?> 
-  		
+      */
       
+      // Inseri um novo ususuário utilizando metodo com procedure e contrutor
+ 			/*
+        $aluno = new Usuario("Fernando.Santos","Santos@123");
+
+        $aluno->insert();
+
+        echo $aluno;
+      */
+     // Alterando dados dos Usuários 
+     
+     $usuario = new Usuario();
+
+     $usuario->loadById(10);
+
+     $usuario->update("Marcos.Lima","Lima@123");
+
+     echo $usuario;
+
+      ?>  		     
   	</body>
  <html/>

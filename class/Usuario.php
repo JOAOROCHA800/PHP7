@@ -65,16 +65,20 @@ class Usuario {
 			
 			if (count($results) > 0) {
 				
-				$row = $results[0];
-
-				$this -> setUsuario($row['idusuario']);
-				$this -> setDeslogin($row['deslogin']);
-				$this -> setDessenha($row['dessenha']);
-				$this -> setDtcadastro(new DateTime($row['dtcadastro']));
+				$this->setData($results[0]);
 								
 			}
 	}  
-	// Metodo que gera as informações em Strings 
+	/////////Metodos especiais Nativos / Magicos 
+	
+	//  Metodo constutor passando login e senha 
+	public function __construct ($login = "",$password = "") {
+		
+		$this-> setDeslogin($login);
+		$this-> setDessenha($password);
+	}
+	
+	//  Metodo que gera as informações em Strings 
 	public function __toString () {
 		
 		return json_encode(array(
@@ -84,6 +88,7 @@ class Usuario {
 				"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s"),
 		));
 	}
+	
 	//Metodo para gerar todos Usuário da tabela (lista te todos)
 	public static function getList() {
 		$sql = new Sql();
@@ -110,18 +115,57 @@ class Usuario {
 			
 			if (count($results) > 0) {
 				
-				$row = $results[0];
-
-				$this -> setUsuario($row['idusuario']);
-				$this -> setDeslogin($row['deslogin']);
-				$this -> setDessenha($row['dessenha']);
-				$this -> setDtcadastro(new DateTime($row['dtcadastro']));
+				$this->setData($results[0]);
 								
 			} else {
 				throw new Exception("Login e/ou senha inválido.", 1);
 				
 			}
 	} 
-	
+
+	// METODO PARA CARREGAR OS SETERS  
+	public function setData($data){
+			
+			$this -> setUsuario($data['idusuario']);
+			$this -> setDeslogin($data['deslogin']);
+			$this -> setDessenha($data['dessenha']);
+			$this -> setDtcadastro(new DateTime($data['dtcadastro']));
+	}
+
+	// Metodo para dar insert usuario utilizando procedure no banco
+	public function insert () {
+
+		$sql = new Sql();
+
+		$results = $sql -> select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)",
+			array
+			(
+				':LOGIN'=>$this->getDeslogin(),
+				':PASSWORD'=>$this->getDessenha()
+			)
+		);
+
+		If (count($results) > 0 ) {
+
+			$this->setData($results[0]);
+		}
+	}
+
+	// Metodo para fazer alterações em usuários 
+	public function upDate($login, $password) {
+		
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+		
+		$sql = new Sql();
+		$sql->query("UPDATE tb_usuarios SET deslogin =:LOGIN, dessenha=:PASSWORD WHERE idusuario = :ID", array(
+				':LOGIN'=>$this->getDeslogin($login),
+				':PASSWORD'=>$this->getDessenha($password),
+				':ID'=>$this->getUsuario()
+			) 
+		);  
+
+	}
+
 }
- ?>
+?>
