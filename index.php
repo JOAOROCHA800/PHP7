@@ -63,16 +63,20 @@
 
         echo $aluno;
       */
-     // Alterando dados dos Usuários 
-     
-     $usuario = new Usuario();
+      // Alterando dados dos Usuários 
+      /*
+        $usuario = new Usuario();
 
-     $usuario->loadById(10);
+        $usuario->loadById(10);
 
-     $usuario->update("Marcos.Lima","Lima@123");
+        $usuario->update("Marcos.Lima","Lima@123");
 
-     echo $usuario;
-
+        echo $usuario;
+      */
+        $usuario = new Usuario();
+        $usuario->loadById(15);
+        $usuario->delete();
+        echo $usuario;
       ?>  		     
   	</body>
  <html/>

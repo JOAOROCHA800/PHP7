@@ -152,11 +152,12 @@ class Usuario {
 	}
 
 	// Metodo para fazer alterações em usuários 
+	
 	public function upDate($login, $password) {
 		
 		$this->setDeslogin($login);
 		$this->setDessenha($password);
-		
+
 		$sql = new Sql();
 		$sql->query("UPDATE tb_usuarios SET deslogin =:LOGIN, dessenha=:PASSWORD WHERE idusuario = :ID", array(
 				':LOGIN'=>$this->getDeslogin($login),
@@ -166,6 +167,18 @@ class Usuario {
 		);  
 
 	}
+	public function delete () {
 
+		$sql = new Sql();
+
+		$sql->query("DELETE FROM tb_usuarios WHERE idusuario = :ID", array(
+			':ID'=>$this->getUsuario()
+			)
+		);
+		$this->setUsuario(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(new DateTime());
+	} 
 }
 ?>
